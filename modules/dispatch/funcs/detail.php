@@ -75,19 +75,24 @@ if (isset($array_op[1]) and preg_match("/^([a-zA-Z0-9\-\_]+)\-([\d]+)$/", $array
         if ($row['level_important'] == 2 and !empty($user_info)) {
         $arr_userid = array();
         //update người xem
-        $result_follow = $db->query('SELECT id,list_userid  FROM ' . NV_PREFIXLANG . '_' . $module_data . '_follow WHERE id_dispatch = ' . $id . ' AND FIND_IN_SET(' . $user_info['userid'] . ', list_userid) ');
+        $result_follow = $db->query('SELECT id,list_userid, list_hitstotal  FROM ' . NV_PREFIXLANG . '_' . $module_data . '_follow WHERE id_dispatch = ' . $id . ' AND FIND_IN_SET(' . $user_info['userid'] . ', list_userid) ');
 	    while ($row_follow = $result_follow->fetch()) {
+	        $arr_timeview = $arr_list_hitstotal = array();
     		$arr_userid = explode(',', $row_follow['list_userid']);
-            $arr_timeview = $arr_list_hitstotal = array();
+    		if(!empty($row_follow['list_hitstotal']))
+    		    $arr_list_hitstotal = explode(',', $row_follow['list_hitstotal']);
 			$list_timeview = $list_hitstotal = '';
 
-            foreach ($arr_userid as $user) {
+            foreach ($arr_userid as $key => $user) {
                 if ($user_info['userid'] == $user) {
-                    $arr_timeview[] = NV_CURRENTTIME;
-                    $arr_list_hitstotal[] = $user;
+                    $arr_timeview[$key] = NV_CURRENTTIME;
+                    if(!empty($arr_list_hitstotal))
+                        $arr_list_hitstotal[$key] = $arr_list_hitstotal[$key] + 1;
+                    else 
+                        $arr_list_hitstotal[$key] = 1;
                 } else {
-					$arr_timeview[] = 0;
-                    $arr_list_hitstotal[] = 0;
+                    $arr_timeview[$key] = 0;
+                    $arr_list_hitstotal[$key] = 0;
                 }
             }
 			$list_timeview = implode(',', $arr_timeview);
