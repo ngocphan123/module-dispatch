@@ -54,7 +54,6 @@
 		var listdepcatid = $(this).val();
 		$.get(script_name + '?' + nv_name_variable + '=' + nv_module_name + '&' + nv_fc_variable + '=dispatch_follow&set_todepartment=1&depcatid=' + listdepcatid, function(data) {
 			if (data != '') {
-				alert(data);
 				$('#listdepid_1').show();
 				$("#listdepid_1").html(data);
 				$('#listdepid_0').hide();
@@ -80,25 +79,21 @@
 				<th> {LANG.dis_name} </th>
 				<th> {LANG.departments} </th>
 				<th> {LANG.viewers} </th>
-				<th> {LANG.positions} </th>
 				<th> {LANG.viewers_time} </th>
-				<th class="text-center"> {LANG.viewers_status} </th>
+				<th class="text-center"> {LANG.histotal_view} </th>
 				<th class="text-center"> {LANG.dis_date_term_view} </th>
-				<th class="text-center"> {LANG.feature} </th>
 
 			</tr>
 		</thead>
 		<tbody>
 			<!-- BEGIN: row -->
 			<tr>
-				<td><a href="{ROW.link_detail}" target="_blank"> {ROW.title0} </a></td>
-				<td> {ROW.code} </td>
-				<td><a href="{ROW.link_type}">{ROW.type}</a></td>
-				<td><a href="{ROW.link_cat}">{ROW.cat}</a></td>
-				<td><a href="{ROW.link_singer}">{ROW.from_signer}</a></td>
-				<td class="text-center"> {ROW.from_time} </td>
-				<td class="text-center">{ROW.status}</td>
-				<td class="text-center"><em class="fa fa-edit fa-lg">&nbsp;</em><a href="{EDIT_URL}" {DISABLED_DIS}>{GLANG.edit}</a> &nbsp;&nbsp; - <em class="fa fa-trash-o fa-lg">&nbsp;</em><a href="javascript:void(0);" onclick="nv_pro_del({ROW.id});" {DISABLED_DIS}>{GLANG.delete}</a></td>
+				<td><a href="{ROW.link_detail}" target="_blank"> {FOLOW.title} </a></td>
+				<td> {FOLOW.disparttitle} </td>
+				<td><a href="{ROW.link_type}">{USERNAME}</a></td>
+				<td><a href="{ROW.link_singer}">{TIMEVIEW}</a></td>
+				<td class="text-center"> {HISTOTAL} </td>
+				<td class="text-center">{TERMVIEW}</td>
 
 			</tr>
 			<!-- END: row -->

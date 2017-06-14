@@ -237,3 +237,4 @@ $lang_module['viewers'] = 'Họ và tên';
 $lang_module['viewers_time'] = 'Thời gian xem';
 $lang_module['viewers_status'] = 'Trạng thái';
 $lang_module['deadline_view'] = 'Hạn xem';
+$lang_module['histotal_view'] = 'Số lần xem';
