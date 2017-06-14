@@ -8,8 +8,7 @@
  * @Createdate Tue, 19 Jul 2011 09:07:26 GMT
  */
 
-if (!defined('NV_IS_MOD_CONGVAN'))
-    die('Stop!!!');
+if (!defined('NV_IS_MOD_CONGVAN')) die('Stop!!!');
 
 $page_title = $module_info['custom_title'];
 $key_words = $module_info['keywords'];
@@ -46,24 +45,24 @@ if ($nv_Request->isset_request("type", "get")) {
         if ($row = $re->fetch()) {
             $a_t[] = $row['id'];
         }
-
+        
         $sql .= " AND type IN (" . implode(',', $a_t) . ")";
-
+        
         $base_url .= "&amp;type=" . $type;
     }
 }
 
 if ($nv_Request->isset_request("from", "get")) {
-
+    
     $from = $nv_Request->get_title('from', 'get,post', '');
-
+    
     unset($m);
     if (preg_match("/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/", $from, $m)) {
         $from = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
     } else {
         $from = 0;
     }
-
+    
     if ($from != 0) {
         $sql .= " AND from_time >= " . $from;
         $base_url .= "&amp;from =" . $from;
@@ -71,7 +70,7 @@ if ($nv_Request->isset_request("from", "get")) {
 }
 if ($nv_Request->isset_request("to", "get")) {
     $to = $nv_Request->get_title('to', 'get,post', '');
-
+    
     unset($m);
     if (preg_match("/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/", $to, $m)) {
         $to = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
@@ -79,7 +78,7 @@ if ($nv_Request->isset_request("to", "get")) {
         $to = 0;
     }
     if ($to != 0) {
-
+        
         $sql .= " AND from_time <= " . $to;
         $base_url .= "&amp;to=" . $to;
     }
@@ -87,7 +86,7 @@ if ($nv_Request->isset_request("to", "get")) {
 
 if ($nv_Request->isset_request("from_signer", "get")) {
     $from_signer = $nv_Request->get_int('from_signer', 'get', 0);
-
+    
     if ($from_signer != 0) {
         $sql .= " AND from_signer=" . $from_signer;
         $base_url .= "&amp;from_signer=" . $from_signer;
@@ -138,12 +137,12 @@ $i = 0;
 
 while ($row = $query2->fetch()) {
     $listgroupid = '';
-    if (!empty($user_info) and $row['groups_view'] != 6  and !in_array($row['groups_view'], $user_info['in_groups'])) {
-       continue;
+    $arr_list_id = nv_loaduserid($row['id']);
+    if (($row['groups_view'] != 6 and !in_array($row['groups_view'], $user_info['in_groups']) and !in_array($user_info['userid'], $arr_list_id) and $row['level_important'] == 2) or $row['status_id'] == 3) {
+        continue;
     }
-    $i = $i + 1;
-
-    if ($listtypes[$row['type']]['status'] == 1 && nv_user_in_groups($row['groups_view'])) {
+    $i++;
+    if ($listtypes[$row['type']]['status'] == 1) {
         if (nv_date('d.m.Y', $row['publtime']) == nv_date('d.m.Y', NV_CURRENTTIME)) {
             $row['number_dispatch'] = $row['number_dispatch'] . "<img src=\"" . NV_BASE_SITEURL . "themes/" . $module_info['template'] . "/images/" . $module_file . "/new.gif\">";
         }
@@ -153,11 +152,11 @@ while ($row = $query2->fetch()) {
         $row['to_org'] = '- ' . $row['to_org'];
         if (strpos($row['to_org'], ',')) {
             $row['to_org'] = str_replace(',', '<br />- ', $row['to_org']);
-
+        
         }
-
+        
         $array[$row['id']] = array(
-            'id' => (int)$row['id'],
+            'id' => (int) $row['id'],
             'stt' => $i,
             'title' => $row['title'],
             'code' => $row['number_dispatch'],

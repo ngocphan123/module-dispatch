@@ -73,7 +73,21 @@ function nv_setcats1($list2, $id, $list, $m = 0, $num = 0)
     }
     return $list2;
 }
-
+function nv_loaduserid($id) {
+    global $db, $module_data;
+    $row_id= '';
+    $arr_list_id = array();
+    $result = $db->query('SELECT `list_userid` FROM '. NV_PREFIXLANG .'_'. $module_data .'_follow WHERE `id_dispatch` = '.$id);
+    while ($row_id = $result->fetchColumn()) {
+        if(empty($str_listid))
+            $str_listid = $row_id;
+            else
+                $str_listid .= ','. $row_id;
+    }
+    $arr_list_id = explode(",",$str_listid);
+    $arr_list_id = array_unique($arr_list_id);
+    return $arr_list_id;
+}
 /**
  * nv_listcats()
  *

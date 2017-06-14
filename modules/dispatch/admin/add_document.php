@@ -15,7 +15,7 @@ $array['parentid'] = $catid = $array['type'] = $array['from_signer'] = $array['t
 $arr_de['parentid'] = $array['statusid'] = $deid = $id = $array['level_important'] = $array['reply'] = $array['deid'] = 0;
 $arr_imgs = $arr_img = $list_de = $lis = $listde = $listdecat = $to_depcatid = $_to_depcatid = $arr_deid = $_arr_deid = array();
 $array['publtime'] = $array['term_view'] = $array['date_iss'] = $array['date_first'] = $array['date_die'] = $check = $to_person = $to_recipient = $error = '';
-$array['groups_view'] = 6;
+$array['groups_view'] = 2;
 $id = $nv_Request->get_int('id', 'get', 0);
 
 // System groups user
