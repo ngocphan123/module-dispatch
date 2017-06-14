@@ -132,7 +132,7 @@
 				<td><input class="form-control w200 pull-left" value="{DATA.date_die}" type="text" id="date_die" name="date_die"/></td>
 			</tr>
 			<tr>
-				<td>{LANG.dis_term_view}</td>
+				<td>{LANG.deadline_view}</td>
 				<td><input class="form-control w200 pull-left" value="{DATA.term_view}" type="text" id="term_view" name="term_view" readonly="readonly" /></td>
 			</tr>
 			<tr>
