@@ -60,6 +60,39 @@ while ($row = $result_department->fetch()) {
     $arr_department[$row['id']] = $row;
 }
 
+//Tìm kiếm
+$where = '';
+$view_time_user = '';
+$department = $nv_Request->get_int('department', 'post', 0);
+if (!empty($department)) $where = ' WHERE id_department = ' . $department;
+$type = $nv_Request->get_int('type', 'post', 0);
+if (!empty($type)) {
+    if (!empty($where))
+        $where .= ' AND id_dispatch IN (SELECT id FROM `nv4_vi_dispatch_rows` WHERE `type` =  ' . $type . ')';
+    else
+        $where .= ' WHERE id_dispatch IN (SELECT id FROM `nv4_vi_dispatch_rows` WHERE `type` =  ' . $type . ')';
+}
+
+//băt đầu
+$from = $nv_Request->get_title('from', 'get,post', '');
+unset($m);
+if (preg_match("/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/", $from, $m)) {
+    $from = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
+} else {
+    $from = 0;
+}
+
+//kết thúc
+$to = $nv_Request->get_title('to', 'get,post', '');
+
+unset($m);
+if (preg_match("/^([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})$/", $to, $m)) {
+    $to = mktime(0, 0, 0, $m[2], $m[1], $m[3]);
+} else {
+    $to = 0;
+}
+$terview_id = $nv_Request->get_int('terview_id', 'get,post', 0);
+
 $xtpl = new XTemplate("dispatch_follow.tpl", NV_ROOTDIR . "/themes/" . $global_config['module_theme'] . "/modules/" . $module_file);
 $xtpl->assign('GLANG', $lang_global);
 $xtpl->assign('LANG', $lang_module);
@@ -92,23 +125,45 @@ foreach ($arr_term_view as $view) {
 }
 
 //list danh sách theo dõi công văn
-$result_folow = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_follow');
+$result_folow = $db->query('SELECT * FROM ' . NV_PREFIXLANG . '_' . $module_data . '_follow' . $where);
+
 while ($folow = $result_folow->fetch()) {
     $arr_userid = explode(',', $folow['list_userid']);
     $arr_time = explode(',', $folow['list_timeview']);
     $arr_view = explode(',', $folow['list_hitstotal']);
-    $row_dispath_folow= $db->query('SELECT title ,term_view FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows WHERE id = '.$folow['id_dispatch'])->fetch();
+    $row_dispath_folow = $db->query('SELECT title ,term_view FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows WHERE id = ' . $folow['id_dispatch'])->fetch();
     $folow['title'] = $row_dispath_folow['title'];
-    if($row_dispath_folow['term_view'] > NV_CURRENTTIME) $term_view = 'Chưa hết hạn';
-    else $term_view = 'Hết hạn';
+    if($terview_id == 1 and $row_dispath_folow['term_view'] < NV_CURRENTTIME) continue;
+    if($terview_id == 2 and $row_dispath_folow['term_view'] > NV_CURRENTTIME) continue;
+    if ($row_dispath_folow['term_view'] > NV_CURRENTTIME)
+        $term_view = 'Chưa hết hạn';
+    else
+        $term_view = 'Hết hạn';
     $xtpl->assign('TERMVIEW', $term_view);
-    $folow['disparttitle']= $db->query('SELECT title FROM ' . NV_PREFIXLANG . '_' . $module_data . '_department WHERE id = '.$folow['id_department'])->fetchColumn();   
-    foreach ($arr_userid as $key=>$value) { 
-        $username = $db->query('SELECT `username` FROM `nv4_users` WHERE userid = '.$value)->fetchColumn();
-        if($arr_time[$key] != 0) {
-            $time_view = date('d/m/Y - H:i:s',$arr_time[$key]);           
-        }
-        else 
+    $folow['disparttitle'] = $db->query('SELECT title FROM ' . NV_PREFIXLANG . '_' . $module_data . '_department WHERE id = ' . $folow['id_department'])->fetchColumn();
+    foreach ($arr_userid as $key => $value) {
+        $username = $db->query('SELECT `username` FROM `nv4_users` WHERE userid = ' . $value)->fetchColumn();
+        
+        if ($arr_time[$key] != 0) {
+            if (!empty($from) and !empty($to)) {
+                if ($arr_time[$key] >= $from and $arr_time[$key] <= $to)
+                    $time_view = date('d/m/Y - H:i:s', $arr_time[$key]);
+                else
+                    continue;
+            } elseif (!empty($from)) {
+                if ($arr_time[$key] >= $from)
+                    $time_view = date('d/m/Y - H:i:s', $arr_time[$key]);
+                else
+                    continue;
+            }elseif (!empty($to)) {
+                if ($arr_time[$key] <= $to)
+                    $time_view = date('d/m/Y - H:i:s', $arr_time[$key]);
+                    else
+                        continue;
+            }else 
+                $time_view = date('d/m/Y - H:i:s', $arr_time[$key]);
+        
+        } else
             $time_view = '';
         $xtpl->assign('TIMEVIEW', $time_view);
         $xtpl->assign('USERNAME', $username);
@@ -116,7 +171,7 @@ while ($folow = $result_folow->fetch()) {
         $xtpl->assign('FOLOW', $folow);
         $xtpl->parse('main.row');
     }
-}//die('p');
+} //die('p');
 $xtpl->parse('main');
 $contents = $xtpl->text('main');
 

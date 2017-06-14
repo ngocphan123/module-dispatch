@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="{NV_BASE_SITEURL}{NV_ASSETS_DIR}/js/jquery-ui/jquery-ui.min.css">
 <h1>Theo dõi công văn</h1>
 <div class="well">
-	<form class="form-inline" action="{FORM_ACTION}" method="get">
+	<form class="form-inline" action="{FORM_ACTION}" method="post">
 		<input type="hidden" name ='nv' value={MODULE_NAME}>
 		<input type="hidden" name ='op' value={OP}>
 		<div class="col-md-6">
@@ -39,7 +39,7 @@
 		</div>
 		<div class="col-md-6">
 			{LANG.dis_date_term_view} &nbsp;&nbsp;
-			<select class="form-control" name="department">
+			<select class="form-control" name="terview_id">
 				<!-- BEGIN: term_viewid -->
 				<option value="{TERMVIEW.id}">{TERMVIEW.name}</option>
 				<!-- END: term_viewid -->
