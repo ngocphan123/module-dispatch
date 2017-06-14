@@ -6,7 +6,7 @@
 
 </div>
 <div class="well">{LANG.ofice}:
- <select class="form-control w200" name="office">
+ <select class="form-control w200" name="office" id="office">
        <option value="0">Văn thư</option>
         <option value="1">Trưởng bộ phận</option>
        <option value="2" {LISTCATS.selected}>Nhân viên</option>
@@ -61,7 +61,7 @@
 	});
 	$("input[name=addUser]").click(function() {
 		var a = $("#ablist input[name=uid]").val(), a = intval(a);
-		var b = $("#ablist input[name=office]").val(), b = intval(b);
+		var b = $("#office").val(), b = intval(b);
 		a == 0 && ( a = "");
 		$("#ablist input[name=uid]").val(a);
 		if (a == "") {
