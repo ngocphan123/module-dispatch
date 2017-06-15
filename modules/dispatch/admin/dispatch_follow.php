@@ -133,8 +133,8 @@ while ($folow = $result_folow->fetch()) {
     $arr_view = explode(',', $folow['list_hitstotal']);
     $row_dispath_folow = $db->query('SELECT title ,term_view FROM ' . NV_PREFIXLANG . '_' . $module_data . '_rows WHERE id = ' . $folow['id_dispatch'])->fetch();
     $folow['title'] = $row_dispath_folow['title'];
-    if($terview_id == 1 and $row_dispath_folow['term_view'] < NV_CURRENTTIME) continue;
-    if($terview_id == 2 and $row_dispath_folow['term_view'] > NV_CURRENTTIME) continue;
+    if($terview_id == 1 and $row_dispath_folow['term_view'] > NV_CURRENTTIME) continue;
+    if($terview_id == 2 and $row_dispath_folow['term_view'] < NV_CURRENTTIME) continue;
     if ($row_dispath_folow['term_view'] > NV_CURRENTTIME)
         $term_view = 'Chưa hết hạn';
     else
